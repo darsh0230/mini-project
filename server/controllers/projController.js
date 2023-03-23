@@ -5,6 +5,7 @@ import Jenkins from "jenkins";
 
 import crypto from "crypto";
 import { springTemplate } from "../utils/pipelines/spring.js";
+import { Console } from "console";
 
 export const createProject = async (req, res) => {
   const { githubUrl, frameWork, fVer, pname } = req.body;
@@ -28,17 +29,22 @@ export const createProject = async (req, res) => {
   });
 
   var projTemplate = "";
-  if (frameWork.toLowerCase() === "spring")
+  if (frameWork.toLowerCase() === "spring boot")
     projTemplate = springTemplate(proj.pid, githubUrl);
 
   try {
     if (projTemplate !== "") {
       await jenkins.job.create(proj.pid, projTemplate, function (err) {
         if (err) throw err;
-        res.status(StatusCodes.CREATED).json({ result: proj });
       });
+      await jenkins.job.build(proj.pid, function (err, data) {
+        if (err) throw err;
+      });
+      res.status(StatusCodes.CREATED).json({ result: proj });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 
   res
     .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -75,8 +81,8 @@ export const buildProj = async (req, res) => {
   try {
     await jenkins.job.build(pid, function (err, data) {
       if (err) throw err;
-      res.status(StatusCodes.OK).json({});
     });
+    res.status(StatusCodes.OK).json({});
   } catch (e) {}
 
   res
@@ -94,7 +100,7 @@ export const getLogs = async (req, res) => {
     crumbIssuer: true,
   });
 
-  const lastBuild = await jenkins.job.get(pid).lastBuild.number;
+  var lastBuild = (await jenkins.job.get(pid))["lastBuild"]["number"];
 
   var log = jenkins.build.logStream(pid, lastBuild);
 
