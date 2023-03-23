@@ -5,7 +5,6 @@ import Jenkins from "jenkins";
 
 import crypto from "crypto";
 import { springTemplate } from "../utils/pipelines/spring.js";
-import { Console } from "console";
 
 export const createProject = async (req, res) => {
   const { githubUrl, frameWork, fVer, pname } = req.body;

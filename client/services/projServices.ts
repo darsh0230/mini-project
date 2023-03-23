@@ -69,3 +69,58 @@ export async function createProj(
   }
   return false;
 }
+
+export async function getProj(pid: string): Promise<ProjModel | undefined> {
+  if (!process.env.NEXT_PUBLIC_SERVER_URL) throw "Server Url Not Set";
+  const url = process.env.NEXT_PUBLIC_SERVER_URL + `/project/${pid}`;
+
+  const token = localStorage.getItem("Token");
+
+  var proj: ProjModel;
+
+  try {
+    var res = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // console.log(res.data.result);
+
+    if (res.status === 200) {
+      proj = res.data.result;
+      return proj;
+    }
+  } catch (e: any) {
+    return;
+  }
+  return;
+}
+
+export async function getProjLogs(pid: string, setLog: any) {
+  if (!process.env.NEXT_PUBLIC_SERVER_URL) throw "Server Url Not Set";
+  const url = process.env.NEXT_PUBLIC_SERVER_URL + `/project/${pid}/logs`;
+
+  const token = localStorage.getItem("Token");
+
+  try {
+    var res = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      onDownloadProgress: (progressEvent) => {
+        console.log(progressEvent);
+      },
+    });
+
+    // console.log(res.data.result);
+
+    if (res.status === 200) {
+      setLog(res.data);
+    }
+  } catch (e: any) {
+    return;
+  }
+}

@@ -35,3 +35,26 @@ select,
 a {
     -webkit-tap-highlight-color: transparent;
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  /* TODO: clear this */
+  /* display: none; */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #888; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  
+  background: #f1f1f1; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #fff; 
+}
