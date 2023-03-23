@@ -57,7 +57,9 @@ function ProjDetails() {
       {/* project logs */}
       <div className="h-[70vh] w-full p-8">
         <div className="w-full h-full p-4 py-8 px-10 flex flex-col bg-[#222]">
-          <div className="font-extralight overflow-y-auto">{logText}</div>
+          <div className="font-extralight overflow-y-auto whitespace-pre-line">
+            {logText}
+          </div>
         </div>
       </div>
     </div>

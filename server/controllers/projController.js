@@ -99,9 +99,14 @@ export const getLogs = async (req, res) => {
     crumbIssuer: true,
   });
 
-  var lastBuild = (await jenkins.job.get(pid))["lastBuild"]["number"];
+  var lastBuild = await jenkins.job.get(pid);
 
-  var log = jenkins.build.logStream(pid, lastBuild);
+  while (lastBuild["lastBuild"] === null) {
+    await new Promise((r) => setTimeout(r, 1000));
+    lastBuild = await jenkins.job.get(pid);
+  }
+
+  var log = jenkins.build.logStream(pid, lastBuild["lastBuild"]["number"]);
 
   log.on("data", function (text) {
     res.write(text);

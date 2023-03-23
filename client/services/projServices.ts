@@ -110,8 +110,8 @@ export async function getProjLogs(pid: string, setLog: any) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      onDownloadProgress: (progressEvent) => {
-        console.log(progressEvent);
+      onDownloadProgress: function (progressEvent) {
+        setLog(progressEvent.event.target.response);
       },
     });
 

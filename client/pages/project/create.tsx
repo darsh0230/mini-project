@@ -10,7 +10,7 @@ function CreateProj() {
   const initValues: initProps = {
     pname: "",
     gUrl: "",
-    fname: "",
+    fname: "spring boot",
   };
 
   const [projDetails, setProjDetails] = useState<initProps>(initValues);
@@ -72,7 +72,8 @@ function CreateProj() {
               value={projDetails.fname}
               onChange={(v) =>
                 setProjDetails((f) => ({ ...f, fname: v.target.value }))
-              }>
+              }
+            >
               <option>Spring Boot</option>
               <option>Django</option>
             </select>
@@ -81,7 +82,8 @@ function CreateProj() {
           {/* Deploy button */}
           <button
             className="m-4 bg-transparent hover:bg-white text-white hover:text-black py-2 px-4 border border-white hover:border-transparent rounded font-light"
-            onClick={handleSubmitBtnClick}>
+            onClick={handleSubmitBtnClick}
+          >
             Deploy Now
           </button>
         </div>
