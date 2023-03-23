@@ -8,6 +8,10 @@ const projSchema = mongoose.Schema({
 
   uid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
+  pname: {
+    type: String,
+  },
+
   githubUrl: {
     type: String,
     // unique: true,

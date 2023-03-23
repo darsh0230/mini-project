@@ -23,7 +23,7 @@ userSchema.pre("save", async function () {
 });
 
 userSchema.methods.createJwt = function () {
-  return jwt.sign({ userId: this._id }, process.env.EXPAPP_JWT_SECRET, {
+  return jwt.sign({ uid: this._id }, process.env.EXPAPP_JWT_SECRET, {
     expiresIn: process.env.EXPAPP_JWT_LIFETIME,
   });
 };
