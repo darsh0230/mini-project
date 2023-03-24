@@ -129,6 +129,20 @@ export const getLogs = async (req, res) => {
 export const deleteProj = async (req, res) => {
   const { pid } = req.params;
 
+  var jenkins = new Jenkins({
+    baseUrl: "http://darshan:darshan02@localhost:8080",
+    crumbIssuer: true,
+  });
+  try {
+    await jenkins.job.destroy(pid, function (err) {
+      if (err) throw err;
+    });
+  } catch (e) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ err: "Something's wrong and it's not your fault" });
+  }
+
   await ProjModel.deleteOne({ pid, uid: req.user.uid });
 
   res.status(StatusCodes.OK).json({});
