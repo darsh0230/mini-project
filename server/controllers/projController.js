@@ -147,13 +147,15 @@ export const deleteProj = async (req, res) => {
   }
 
   const cmdToDelete = `docker stop ${pid}-build-container ${pid}-deploy-container ; docker rm ${pid}-build-container ${pid}-deploy-container ; docker rmi ${pid}-build-image ${pid}-deploy-image `;
-  exec(cmdToDelete, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-    }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-  });
+  try {
+    exec(cmdToDelete, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
+  } catch (e) {}
 
   await ProjModel.deleteOne({ pid, uid: req.user.uid });
 
