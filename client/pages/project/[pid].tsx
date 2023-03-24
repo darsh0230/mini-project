@@ -67,7 +67,7 @@ function ProjDetails() {
         <button
           className="w-1/3 m-4 bg-transparent hover:bg-white text-white hover:text-black py-2 px-4 border border-white hover:border-transparent rounded font-light"
           onClick={async () => {
-            // rebuildProj(router, proj?.pid ?? "");
+            rebuildProj(router, proj?.pid ?? "");
             await new Promise((r) => setTimeout(r, 3000));
             window.location.reload();
           }}>

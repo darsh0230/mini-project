@@ -2,6 +2,7 @@ import ProjModel from "../models/projModel.js";
 import { StatusCodes } from "http-status-codes";
 import { BadRequestError, UnauthenticatedError } from "../utils/errors.js";
 import Jenkins from "jenkins";
+import { exec } from "child_process";
 
 import crypto from "crypto";
 import { springTemplate } from "../utils/pipelines/spring.js";
@@ -55,7 +56,9 @@ export const createProject = async (req, res) => {
 // ----------------------------------------------------------------------
 
 export const getProjList = async (req, res) => {
-  const projs = await ProjModel.find({ uid: req.user.uid });
+  const projs = await ProjModel.find({ uid: req.user.uid }).sort({
+    $natural: -1,
+  });
   res.status(StatusCodes.OK).json({ result: projs });
 };
 
@@ -142,6 +145,15 @@ export const deleteProj = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ err: "Something's wrong and it's not your fault" });
   }
+
+  const cmdToDelete = `docker stop ${pid}-build-container ${pid}-deploy-container ; docker rm ${pid}-build-container ${pid}-deploy-container ; docker rmi ${pid}-build-image ${pid}-deploy-image `;
+  exec(cmdToDelete, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
 
   await ProjModel.deleteOne({ pid, uid: req.user.uid });
 

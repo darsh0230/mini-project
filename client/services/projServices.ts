@@ -146,7 +146,7 @@ export async function rebuildProj(router: any, pid: string) {
     );
 
     if (res.status === 200) {
-      await new Promise((r) => setTimeout(r, 3000));
+      await new Promise((r) => setTimeout(r, 6000));
       router.push(`/project/${pid}`);
       return;
     }
