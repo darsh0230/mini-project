@@ -1,10 +1,14 @@
 import Navbar from "@/components/shared/navbar/navbar";
 import { createProj } from "@/services/projServices";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import jwt from "jsonwebtoken";
+import { selectUser } from "@/redux/userSlice";
+import { useSelector } from "react-redux";
 
 function CreateProj() {
   const router = useRouter();
+  const user = useSelector(selectUser);
 
   type initProps = { pname: string; gUrl: string; fname: string };
   const initValues: initProps = {
@@ -23,6 +27,12 @@ function CreateProj() {
       router
     );
   };
+
+  useEffect(() => {
+    if (user && !user.token) {
+      router.push("/auth/signup");
+    }
+  }, [user]);
 
   return (
     <div className="w-full flex flex-col">
@@ -72,8 +82,7 @@ function CreateProj() {
               value={projDetails.fname}
               onChange={(v) =>
                 setProjDetails((f) => ({ ...f, fname: v.target.value }))
-              }
-            >
+              }>
               <option>Spring Boot</option>
               <option>Django</option>
             </select>
@@ -82,8 +91,7 @@ function CreateProj() {
           {/* Deploy button */}
           <button
             className="m-4 bg-transparent hover:bg-white text-white hover:text-black py-2 px-4 border border-white hover:border-transparent rounded font-light"
-            onClick={handleSubmitBtnClick}
-          >
+            onClick={handleSubmitBtnClick}>
             Deploy Now
           </button>
         </div>

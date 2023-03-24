@@ -98,6 +98,8 @@ export async function getProj(pid: string): Promise<ProjModel | undefined> {
   return;
 }
 
+// -------------------------------------------------------------------
+
 export async function getProjLogs(pid: string, setLog: any) {
   if (!process.env.NEXT_PUBLIC_SERVER_URL) throw "Server Url Not Set";
   const url = process.env.NEXT_PUBLIC_SERVER_URL + `/project/${pid}/logs`;
@@ -119,6 +121,58 @@ export async function getProjLogs(pid: string, setLog: any) {
 
     if (res.status === 200) {
       setLog(res.data);
+    }
+  } catch (e: any) {
+    return;
+  }
+}
+
+export async function rebuildProj(router: any, pid: string) {
+  if (!process.env.NEXT_PUBLIC_SERVER_URL) throw "Server Url Not Set";
+  const url = process.env.NEXT_PUBLIC_SERVER_URL + `/project/build`;
+
+  const token = localStorage.getItem("Token");
+
+  try {
+    var res = await axios.post(
+      url,
+      { pid },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      await new Promise((r) => setTimeout(r, 3000));
+      router.push(`/project/${pid}`);
+      return;
+    }
+  } catch (e: any) {
+    return;
+  }
+}
+
+export async function deleteProj(pid: string) {
+  if (!process.env.NEXT_PUBLIC_SERVER_URL) throw "Server Url Not Set";
+  const url = process.env.NEXT_PUBLIC_SERVER_URL + `/project/${pid}/delete`;
+
+  const token = localStorage.getItem("Token");
+
+  try {
+    var res = await axios.delete(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.status === 200) {
+      await new Promise((r) => setTimeout(r, 500));
+      window.location.reload();
+      return;
     }
   } catch (e: any) {
     return;

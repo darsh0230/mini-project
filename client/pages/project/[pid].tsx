@@ -1,12 +1,16 @@
 import Navbar from "@/components/shared/navbar/navbar";
 import { ProjModel } from "@/models/projModel";
-import { getProj, getProjLogs } from "@/services/projServices";
+import { getProj, getProjLogs, rebuildProj } from "@/services/projServices";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import jwt from "jsonwebtoken";
+import { selectUser } from "@/redux/userSlice";
+import { useSelector } from "react-redux";
 
 function ProjDetails() {
   const router = useRouter();
+  const user = useSelector(selectUser);
+
   const { pid } = router.query;
   const [proj, setProj] = useState<ProjModel>();
 
@@ -25,6 +29,12 @@ function ProjDetails() {
     }
     asyncc();
   }, [pid]);
+
+  useEffect(() => {
+    if (user && !user.token) {
+      router.push("/auth/signup");
+    }
+  }, [user]);
 
   return (
     <div className="w-full flex flex-col">
@@ -52,8 +62,20 @@ function ProjDetails() {
           </div>
         </div>
       </div>
-      <div className="h-10" />
 
+      <div className="w-full flex justify-center">
+        <button
+          className="w-1/3 m-4 bg-transparent hover:bg-white text-white hover:text-black py-2 px-4 border border-white hover:border-transparent rounded font-light"
+          onClick={async () => {
+            // rebuildProj(router, proj?.pid ?? "");
+            await new Promise((r) => setTimeout(r, 3000));
+            window.location.reload();
+          }}>
+          Rebuild Project
+        </button>
+      </div>
+
+      <div className="h-10" />
       {/* project logs */}
       <div className="h-[70vh] w-full p-8">
         <div className="w-full h-full p-4 py-8 px-10 flex flex-col bg-[#222]">

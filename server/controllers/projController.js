@@ -125,3 +125,13 @@ export const getLogs = async (req, res) => {
 };
 
 // ----------------------------------------------------------------------
+
+export const deleteProj = async (req, res) => {
+  const { pid } = req.params;
+
+  await ProjModel.deleteOne({ pid, uid: req.user.uid });
+
+  res.status(StatusCodes.OK).json({});
+};
+
+// ----------------------------------------------------------------------

@@ -9,12 +9,12 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import validator from "validator";
 
 import { PulseLoader } from "react-spinners";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import validator from "validator";
 import { emailLogin } from "../../../services/auth";
 import { useRouter } from "next/router";
 import { selectUser } from "../../../redux/userSlice";

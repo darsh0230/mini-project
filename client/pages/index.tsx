@@ -1,11 +1,19 @@
 import Head from "next/head";
 import Navbar from "@/components/shared/navbar/navbar";
 import { useEffect, useState } from "react";
-import { getAllProj } from "@/services/projServices";
+import { deleteProj, getAllProj, rebuildProj } from "@/services/projServices";
 import { ProjModel } from "@/models/projModel";
 import CachedIcon from "@mui/icons-material/Cached";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/redux/userSlice";
+import jwt from "jsonwebtoken";
 
-function AllProjectRow({ pName, status, framework }: any) {
+function AllProjectRow({ pName, status, framework, pid }: any) {
+  const router = useRouter();
+
   return (
     <tr className="border-b last:border-0">
       <td className="border-r last:border-0 p-2 py-4 font-light text-left capitalize pl-8">
@@ -17,9 +25,29 @@ function AllProjectRow({ pName, status, framework }: any) {
       <td className="border-r last:border-0 p-2 text-center font-light">
         {framework}
       </td>
-      <td className="border-r last:border-0 p-2 text-right font-light pr-12">
-        <button>
-          <CachedIcon fontSize="large" />
+      <td className="w-full flex justify-end border-r last:border-0 p-2 text-right font-light pr-8">
+        <button
+          className="px-2 hover:bg-slate-800 rounded-md"
+          onClick={() => {
+            router.push(`/project/${pid}`);
+          }}>
+          <RemoveRedEyeIcon />
+        </button>
+        {/*  */}
+        <button
+          className="px-2 hover:bg-slate-800 rounded-md"
+          onClick={() => {
+            rebuildProj(router, pid);
+          }}>
+          <CachedIcon />
+        </button>
+        {/*  */}
+        <button
+          className="px-2 text-red-500 hover:bg-slate-800 rounded-md"
+          onClick={() => {
+            deleteProj(pid);
+          }}>
+          <DeleteOutlinedIcon />
         </button>
       </td>
     </tr>
@@ -29,6 +57,15 @@ function AllProjectRow({ pName, status, framework }: any) {
 export default function Home() {
   // var allProjs: ProjModel[];
   const [allProjs, setAllProjs] = useState<ProjModel[]>([]);
+
+  const user = useSelector(selectUser);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user && !user.token) {
+      router.push("/auth/signup");
+    }
+  }, [user]);
 
   useEffect(() => {
     async function asyncc() {
@@ -79,6 +116,7 @@ export default function Home() {
                   pName={proj.pname}
                   status={proj.pStatus}
                   framework={proj.frameWork}
+                  pid={proj.pid}
                 />
               ))}
             </tbody>

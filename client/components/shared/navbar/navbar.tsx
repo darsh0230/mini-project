@@ -7,14 +7,15 @@ import { selectUser } from "@/redux/userSlice";
 import { useEffect, useState } from "react";
 import { logout } from "@/services/auth";
 import { useRouter } from "next/router";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function PageLinks() {
   return (
     <>
-      {/* <Link href="/" className="font-light text-lg">
-        Home
+      <Link href="/project/create" className="font-light text-lg">
+        Create Project +
       </Link>
-      <Link href="/" className="font-light text-lg">
+      {/* <Link href="/" className="font-light text-lg">
         About Us
       </Link> */}
     </>
@@ -56,11 +57,13 @@ function UserAuth() {
       ) : (
         <div className="h-full pr-10 flex justify-between items-center ">
           <button
-            className="font-light text-lg"
+            className="flex items-center font-light text-lg"
             onClick={() => {
               logout(dispatch);
               router.push("/auth/signup");
             }}>
+            <LogoutIcon />
+            <div className="w-2" />
             Logout
           </button>
         </div>
