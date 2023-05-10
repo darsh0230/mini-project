@@ -37,18 +37,40 @@ export const springTemplate = (pid, gUrl) => {
                   echo &quot;Built App.jar&quot;
               }
           }
+
+          stage(&apos;Auth&apos;) {
+            steps {
+                echo &quot;Authenticating to azure&quot;
+                
+                sh &apos;az login&apos;
+                sh &apos;docker login azure&apos;
+                sh &apos;az acr login --name devminiproj&apos;
+                sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe&apos;
+
+            }
+
           stage(&apos;Deploy&apos;) {
               steps {
                   echo &quot;Deploying the Application&quot;
                   
                   dir(&apos;spring-petclinic&apos;){
-                      sh &apos;docker rm -f ${pid}-deploy-container || echo &quot;No pre running containers.&quot;&apos;
-                      sh &apos;docker build -t ${pid}-deploy-image:latest .&apos;
-                      sh &apos;docker run -d --name ${pid}-deploy-container -p 8081:8081 ${pid}-deploy-image:latest&apos;
+                      sh &apos;docker --context myacicontext rm -f ${pid}-deploy-container || echo &quot;No pre running containers.&quot;&apos;
+                      sh &apos;docker build -t devminiproj.azurecr.io/${pid}-deploy-image:latest .&apos;
+
+                      sh &apos;docker push devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
+
+                      sh &apos;docker --context myacicontext run -d --name ${pid}-deploy-container -p 8081:8081 devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
+
+                      sh &apos;echo \\n\\n\\n\\n\\n&apos;
+                      sh &apos;docker --context myacicontext ps&apos;
+                      sh &apos;echo \\n\\n\\n\\n\\n&apos;
+
                   }
   
               }
           }
+
+        }
           
       }
       post {
@@ -57,6 +79,9 @@ export const springTemplate = (pid, gUrl) => {
               
               sh &quot;cd ..&quot;
               sh &apos;rm -rf ./${gUrl.split("/").at(-1)}&apos;
+
+              sh &quot;az logout&quot;
+              sh &quot;docker logout azure&quot;
               
               echo &apos;cleaned workspace&apos;
           }
