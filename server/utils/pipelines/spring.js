@@ -71,7 +71,7 @@ export const springTemplate = (pid, gUrl) => {
               }
           }
 
-        }
+        
           
       }
       post {
