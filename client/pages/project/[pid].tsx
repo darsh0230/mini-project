@@ -60,6 +60,16 @@ function ProjDetails() {
             <div>Project Status : </div>
             <div className="font-extralight">{proj?.pStatus}</div>
           </div>
+          <div className="w-full py-5 flex justify-between">
+            <div>Deployed URL : </div>
+            <div className="font-extralight">
+              {logText
+                .match(
+                  /^[0-9]{3,}\.[0-9]{3,}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
+                )
+                ?.toString()}
+            </div>
+          </div>
         </div>
       </div>
 
