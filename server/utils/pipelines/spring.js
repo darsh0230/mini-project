@@ -48,6 +48,7 @@ export const springTemplate = (pid, gUrl) => {
                 sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe&apos;
 
             }
+          }
 
           stage(&apos;Deploy&apos;) {
               steps {
