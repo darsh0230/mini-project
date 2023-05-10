@@ -64,13 +64,13 @@ function ProjDetails() {
             <div>Deployed URL : </div>
             <a
               className="font-extralight"
-              href={
+              href={`http://${
                 logText
                   .match(
                     /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
                   )
                   ?.toString() ?? ""
-              }>
+              }/`}>
               {logText
                 .match(
                   /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
