@@ -62,13 +62,21 @@ function ProjDetails() {
           </div>
           <div className="w-full py-5 flex justify-between">
             <div>Deployed URL : </div>
-            <div className="font-extralight">
+            <a
+              className="font-extralight"
+              href={
+                logText
+                  .match(
+                    /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
+                  )
+                  ?.toString() ?? ""
+              }>
               {logText
                 .match(
                   /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
                 )
                 ?.toString()}
-            </div>
+            </a>
           </div>
         </div>
       </div>
