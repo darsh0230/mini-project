@@ -65,7 +65,7 @@ function ProjDetails() {
             <div className="font-extralight">
               {logText
                 .match(
-                  /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
+                  /[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/g
                 )
                 ?.toString()}
             </div>
