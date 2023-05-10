@@ -45,7 +45,7 @@ export const springTemplate = (pid, gUrl) => {
                 sh &apos;az login&apos;
                 sh &apos;docker login azure&apos;
                 sh &apos;az acr login --name devminiproj&apos;
-                sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe&apos;
+                sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe || echo context&apos;
 
             }
           }
