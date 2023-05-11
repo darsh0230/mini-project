@@ -84,7 +84,7 @@ function CreateProj() {
                 setProjDetails((f) => ({ ...f, fname: v.target.value }))
               }>
               <option>Spring Boot</option>
-              <option>Django</option>
+              <option>nextJS</option>
             </select>
           </div>
 

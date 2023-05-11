@@ -18,60 +18,60 @@ export const springTemplate = (pid, gUrl) => {
       agent any
   
       stages {
-          stage(&apos;Build&apos;) {
-              steps {
-                  echo &quot;Building the Application&quot;
-                  
-                  // Get some code from a GitHub repository
-                  sh &quot;git clone &apos;${gUrl}&apos;&quot;
-                  
-                  dir(&apos;${gUrl.split("/").at(-1)}&apos;){
-                      
-                      sh &apos;docker rm -f ${pid}-build-container || echo &quot;No pre running containers.&quot;&apos;
-                      sh &apos;docker build -f BuildDockerFile -t ${pid}-build-image:latest .&apos;
-                      sh &apos;docker run --name ${pid}-build-container ${pid}-build-image:latest&apos;
-                      sh &apos;mkdir target&apos;
-                      sh &apos;docker cp ${pid}-build-container:/project/target/App.jar ./target/App.jar &apos;
-                  }
-                  
-                  echo &quot;Built App.jar&quot;
-              }
-          }
+        stage(&apos;Auth&apos;) {
+          steps {
+              echo &quot;Authenticating to azure&quot;
+              
+              sh &apos;az login&apos;
+              sh &apos;docker login azure&apos;
+              sh &apos;az acr login --name devminiproj&apos;
+              sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe || echo context&apos;
 
-          stage(&apos;Auth&apos;) {
+          }
+        }
+
+
+        stage(&apos;Build&apos;) {
             steps {
-                echo &quot;Authenticating to azure&quot;
+                echo &quot;Building the Application&quot;
                 
-                sh &apos;az login&apos;
-                sh &apos;docker login azure&apos;
-                sh &apos;az acr login --name devminiproj&apos;
-                sh &apos;docker context create aci myacicontext --resource-group e41a58dc-e831-ddb7-44fd-bc60834dbffe || echo context&apos;
+                // Get some code from a GitHub repository
+                sh &quot;git clone &apos;${gUrl}&apos;&quot;
+                
+                dir(&apos;${gUrl.split("/").at(-1)}&apos;){
+                    
+                    sh &apos;docker rm -f ${pid}-build-container || echo &quot;No pre running containers.&quot;&apos;
+                    sh &apos;docker build -f BuildDockerFile -t ${pid}-build-image:latest .&apos;
+                    sh &apos;docker run --name ${pid}-build-container ${pid}-build-image:latest&apos;
+                    sh &apos;mkdir target&apos;
+                    sh &apos;docker cp ${pid}-build-container:/project/target/App.jar ./target/App.jar &apos;
+                }
+                
+                echo &quot;Built App.jar&quot;
+            }
+        }
+
+
+        stage(&apos;Deploy&apos;) {
+            steps {
+                echo &quot;Deploying the Application&quot;
+                
+                dir(&apos;spring-petclinic&apos;){
+                    sh &apos;docker --context myacicontext rm -f ${pid}-deploy-container || echo &quot;No pre running containers.&quot;&apos;
+                    sh &apos;docker build -t devminiproj.azurecr.io/${pid}-deploy-image:latest .&apos;
+
+                    sh &apos;docker push devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
+
+                    sh &apos;docker --context myacicontext run -d --name ${pid}-deploy-container -p 8081:8081 devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
+
+                    sh &apos;echo \\n\\n\\n\\n\\n&apos;
+                    sh &apos;docker --context myacicontext ps&apos;
+                    sh &apos;echo \\n\\n\\n\\n\\n&apos;
+
+                }
 
             }
-          }
-
-          stage(&apos;Deploy&apos;) {
-              steps {
-                  echo &quot;Deploying the Application&quot;
-                  
-                  dir(&apos;spring-petclinic&apos;){
-                      sh &apos;docker --context myacicontext rm -f ${pid}-deploy-container || echo &quot;No pre running containers.&quot;&apos;
-                      sh &apos;docker build -t devminiproj.azurecr.io/${pid}-deploy-image:latest .&apos;
-
-                      sh &apos;docker push devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
-
-                      sh &apos;docker --context myacicontext run -d --name ${pid}-deploy-container -p 8081:8081 devminiproj.azurecr.io/${pid}-deploy-image:latest&apos;
-
-                      sh &apos;echo \\n\\n\\n\\n\\n&apos;
-                      sh &apos;docker --context myacicontext ps&apos;
-                      sh &apos;echo \\n\\n\\n\\n\\n&apos;
-
-                  }
-  
-              }
-          }
-
-        
+        }
           
       }
       post {

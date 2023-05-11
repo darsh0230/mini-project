@@ -6,6 +6,7 @@ import { exec } from "child_process";
 
 import crypto from "crypto";
 import { springTemplate } from "../utils/pipelines/spring.js";
+import { nextJSTemplate } from "../utils/pipelines/nextJS.js";
 
 export const createProject = async (req, res) => {
   const { githubUrl, frameWork, fVer, pname } = req.body;
@@ -31,6 +32,8 @@ export const createProject = async (req, res) => {
   var projTemplate = "";
   if (frameWork.toLowerCase() === "spring boot")
     projTemplate = springTemplate(proj.pid, githubUrl);
+  if (frameWork.toLowerCase() === "nextjs")
+    projTemplate = nextJSTemplate(proj.pid, githubUrl);
 
   try {
     if (projTemplate !== "") {
